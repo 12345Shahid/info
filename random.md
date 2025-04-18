@@ -1479,3 +1479,14 @@ This blueprint provides a comprehensive foundation for building HalalBlogAI usin
 
 
 
+
+
+
+
+
+
+
+https://docs.google.com/document/d/1hdpcwcZDy2Ry016L7EeZ_W7n4debLXMxOFmOr7BaLHY/edit?usp=sharing
+
+
+
