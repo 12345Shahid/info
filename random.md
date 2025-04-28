@@ -1486,6 +1486,93 @@ This blueprint provides a comprehensive foundation for building HalalBlogAI usin
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dear Content Runners 
+
+I hope this message finds you well.
+
+My name is Shahid Hasan, and I am the founder of Edu.1 Bangladesh , a growing online platform dedicated to empowering students in Bangladesh by providing educational resources and writing opportunities.
+
+I am reaching out to explore a potential collaboration where students from our community can contribute writing projects for your company, similar to the services offered by ProWritersTime. Our site attracts enthusiastic and capable young writers eager to gain experience and earn through quality writing assignments.
+
+I believe this partnership could provide a mutually beneficial opportunity: you would gain access to a motivated pool of writers, and our students would benefit from real-world writing experience and financial support.
+
+Would you be interested in discussing this further? I would be happy to share more details about our audience and how we can facilitate a smooth collaboration.
+
+Thank you for considering this opportunity. Looking forward to your response.
+
+Best regards, Shahid Hasan shahidhasanpollob@gmail.com
+
+
+
+Create a website for my sass company . It works on almost all the services related with computer science and very specialised for AI. Create authentication system with password reset functionality. It will be a static website. It will only have the homepage the , AI startup page. And a contact page. Nothing else.  In case the name of the website is createHalal and as I said before it is a software company so write a description for it and we build things with alliance with the rules of Islam. It doesn't means that we build things Islamic rather we don't just build things which are Haram by the rules of Islam. That's it. And below is the email ID to keep in the contact page as a contact number 
+
+
+
+
+create.contact.369@gmail.com
+
+
+
+Supabase url     https://hqdlqogacwovunmvgvmq.supabase.co
+Supabase public/anon key      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxZGxxb2dhY3dvdnVubXZndm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU0MDAyMDIsImV4cCI6MjA2MDk3NjIwMn0.fZIWLcnyr5PpWrMTF0oLfEst-lkATpA4iZ8PPUFcrWE
+
+
+
+
+In case use this for authentication if there is anything necessary.
+
+
+
+
+
+In the pricing page there will be three pricings. I mean, this is not the pricing page. I'm sorry it should be the AI startup page. In this page there will be three pricing firstly is the basic which is the $3 per month. For this, they will have access to one AI model from any model. Doesn't matter what model they use they will have to provide $2 for the API and then they can pay more as they wish. And  it will give them a completely functional website. With the functionality is below
+
+
+Access to any of the AI model with free three month usage unlimitedly . Secondly, authentication and database support and a fully deployed website. And up to 5 chat interfaces as they want to create different categories of chats in their website so they will tell us and we will give. And basic  ui customisation. [Like about the description of their project, but it is not so much. ] they will also get 24 seven pro level customer support. And also little functionalities like dark and light mode, copying ai response. It will also have other necessary pages like about us, pricings, contact. The user will give description about this and he will get static pages, not dynamic pages or something very crucial functionality. Dashboard functionality for tracking credits will be also added.
+
+
+
+
+
+Okay, there will be another with $12 plan. They will get everything in the $3 plan which is called starter and this one is called the business plan. And also they will get some things below.
+
+
+They can choose as many models as they wish in their website from any model as they wish and they will have notification functionality. And they will also have a project/file management functionality. And up to 15 chat interfaces and functionality for categorising them. Also, they will have functionality to customise the UI more like choosing the colour codes and the font and they can also add images as inspiration for their website. And yes, they will use API's for multiple models and they will not need to give API fee rather we will give them $2 API fee for free.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 https://docs.google.com/document/d/1hdpcwcZDy2Ry016L7EeZ_W7n4debLXMxOFmOr7BaLHY/edit?usp=sharing
 
 
