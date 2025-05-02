@@ -1724,3 +1724,342 @@ https://docs.google.com/document/d/1hdpcwcZDy2Ry016L7EeZ_W7n4debLXMxOFmOr7BaLHY/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dear Content Runners 
+
+I hope this message finds you well.
+
+My name is Shahid Hasan, and I am the founder of Edu.1 Bangladesh , a growing online platform dedicated to empowering students in Bangladesh by providing educational resources and writing opportunities.
+
+I am reaching out to explore a potential collaboration where students from our community can contribute writing projects for your company, similar to the services offered by ProWritersTime. Our site attracts enthusiastic and capable young writers eager to gain experience and earn through quality writing assignments.
+
+I believe this partnership could provide a mutually beneficial opportunity: you would gain access to a motivated pool of writers, and our students would benefit from real-world writing experience and financial support.
+
+Would you be interested in discussing this further? I would be happy to share more details about our audience and how we can facilitate a smooth collaboration.
+
+Thank you for considering this opportunity. Looking forward to your response.
+
+Best regards, Shahid Hasan shahidhasanpollob@gmail.com
+
+
+
+
+
+ help@appen.com
+
+
+￼
+
+
+Subject: Proposal for Strategic Collaboration with CreateHalal Softwares Limited
+Dear Appen Team,
+
+I hope you’re doing well. I’m reaching out to explore a potential collaboration between Appen and our company as we prepare to launch a new freelance marketplace tailored for efficiency, affordability, and added value to workers.
+
+Our platform aims to not only offer freelance job opportunities but also provide our workers with subscriptions to various platforms and software tools—including our own proprietary solutions—as part of their compensation. We would like to integrate Appen’s job listings into our marketplace using your API, enabling us to post pre-existing jobs from your platform directly to ours.
+
+Here’s where the collaboration becomes mutually beneficial: tasks typically priced at $10 on Appen could be completed on our platform at just $5, while still maintaining full accuracy and quality. We would handle the worker payments based on our internal policy, and your team would continue to benefit from task completion at reduced costs.
+
+We believe this partnership could be highly valuable for both sides, In sha Allah, and would love to schedule a meeting to discuss the opportunity in more detail. Please let us know a convenient time for you.
+
+Looking forward to your response.
+
+Warm regards,
+Shahid Hasan
+shahidhasanpollob@gmail.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Here’s a curated list of **platforms with free/affordable APIs** that allow you to list jobs for your Bangladeshi students to complete remotely. These platforms handle payment from clients, and you can earn via commissions or referral programs:
+
+---
+
+### **1. Amazon Mechanical Turk (MTurk)**  
+- **API**: [MTurk API](https://docs.aws.amazon.com/AWSMechTurk/latest/AWSMturkAPI/Welcome.html)  
+- **Jobs**: Microtasks like data entry, transcription, image tagging, surveys.  
+- **Cost**: Free API access.  
+- **How It Works**:  
+  - Use the API to fetch Human Intelligence Tasks (HITs) from MTurk.  
+  - Students complete tasks (e.g., "Tag images of cars") directly on MTurk.  
+  - **Earnings**: MTurk pays workers, and you earn a % commission by referring students.  
+
+---
+
+### **2. Clickworker**  
+- **API**: [Clickworker Marketplace API](https://www.clickworker.com/wp-content/uploads/2016/01/Mktplace_API_Reference.pdf)  
+- **Jobs**: Data categorization, content creation, surveys.  
+- **Cost**: Free API access (contact `info@clickworker.com` for partnership).  
+- **How It Works**:  
+  - Fetch tasks via API and list them on your site.  
+  - Students complete tasks on Clickworker.  
+  - **Earnings**: Clickworker pays you a referral fee per completed task.  
+
+---
+
+### **3. Microworkers**  
+- **API**: [Microworkers R Package](https://github.com/cloudyr/microworkers) (requires API key via `info@microworkers.com`)  
+- **Jobs**: Social media tasks, data validation, web research.  
+- **Cost**: Free API access (email for approval).  
+- **How It Works**:  
+  - List Microworkers jobs (e.g., "Follow this Instagram account").  
+  - Students complete tasks, and Microworkers pays them directly.  
+  - **Earnings**: Negotiate a partnership fee with Microworkers.  
+
+---
+
+### **4. Remotasks (Scale AI)**  
+- **API**: [Remotasks API](https://www.remotasks.com/)  
+- **Jobs**: AI training tasks (image annotation, transcription).  
+- **Cost**: Free API access for partners.  
+- **How It Works**:  
+  - Integrate Remotasks’ job listings into your site.  
+  - Students complete tasks, and Scale AI pays them via PayPal.  
+  - **Earnings**: Partner program offers revenue sharing (contact sales).  
+
+---
+
+### **5. Toloka by Yandex**  
+- **API**: [Toloka API](https://toloka.ai/en/docs/api/)  
+- **Jobs**: Data labeling, surveys, content moderation.  
+- **Cost**: Free API access.  
+- **How It Works**:  
+  - Fetch Toloka tasks (e.g., "Identify objects in photos").  
+  - Students earn $0.01–$0.10 per task.  
+  - **Earnings**: Apply for Toloka’s affiliate program (5-10% commission).  
+
+---
+
+### **How to Implement**  
+1. **Choose a Platform**: Start with **MTurk** or **Toloka** (easiest APIs).  
+2. **Integrate the API**: Use their documentation to fetch job listings (e.g., `ListTranscriptionJobs` for AWS Transcribe).  
+3. **Display Jobs on Your Site**: Create a "Jobs Board" section with task descriptions.  
+4. **Track Earnings**: Use referral IDs or partner codes to ensure you get credited.  
+
+---
+
+### **Why These Work for You**  
+- **Zero Upfront Cost**: All APIs are free to access.  
+- **Low-Skill Jobs**: Tasks like transcription or image tagging require minimal experience.  
+- **Global Clients**: Platforms already have clients paying for tasks.  
+- **Scalable**: Start small and expand as your student base grows.  
+
+For example, with **MTurk**, you can use the `ListHITs` API call to fetch tasks like:  
+```python
+response = client.list_hits(MaxResults=10)
+print(response['HITs'])
+```
+This returns 10 microtasks your students can complete immediately.  
+
+If no platform fits perfectly, consider **building a custom solution** with no-code tools like n8n or Zapier to scrape job boards (e.g., ProBlogger for writing gigs) and forward them to your site.
+
+
+
+
+
+
+
+Here are **additional platforms** that fit your criteria (free API access or partnership programs for job listings, suitable for students, no credit card required):
+
+---
+
+### **1. RapidWorkers**  
+- **Website**: [https://rapidworkers.com/](https://rapidworkers.com/)  
+- **Jobs**: Microtasks like social media actions, data entry, surveys.  
+- **API**: No public API, but offers **bulk task assignments** for partners.  
+- **Collaboration**: Email `support@rapidworkers.com` to negotiate a partnership for student job listings.  
+
+---
+
+### **2. Picoworkers**  
+- **Website**: [https://picoworkers.com/](https://picoworkers.com/)  
+- **Jobs**: Small tasks (follow Instagram, watch videos, etc.).  
+- **API**: Limited API for enterprises (email `contact@picoworkers.com` for access).  
+- **Earnings**: Earn a % fee per task completed by your students.  
+
+---
+
+### **3. Spare5 (Now Appen Connect)**  
+- **Website**: [https://appen.com/](https://appen.com/)  
+- **Jobs**: Data labeling, image annotation, transcription.  
+- **API**: Available via **Appen Connect Platform** (free for approved partners).  
+- **How It Works**: Integrate tasks into your site; Appen pays workers directly.  
+
+---
+
+### **4. WriterBay**  
+- **Website**: [https://www.writerbay.com/](https://www.writerbay.com/)  
+- **Jobs**: Academic writing, content creation.  
+- **Collaboration**: Use their **contact form** to propose a partnership for student writers.  
+
+---
+
+### **5. Fiverr Affiliate Program**  
+- **Website**: [https://www.fiverr.com/](https://www.fiverr.com/)  
+- **Jobs**: Freelance gigs (writing, design, programming).  
+- **API**: No direct job-listing API, but use their **affiliate links** to refer students.  
+- **Earnings**: Earn up to $150 per student who becomes a seller.  
+
+---
+
+### **6. iWriter**  
+- **Website**: [https://www.iwriter.com/](https://www.iwriter.com/)  
+- **Jobs**: Content writing, blog posts.  
+- **Affiliate Program**: Earn 10% lifetime commission on referred writers.  
+
+---
+
+### **7. Remotasks (Scale AI)**  
+- **Website**: [https://www.remotasks.com/](https://www.remotasks.com/)  
+- **Jobs**: AI training tasks (image annotation, transcription).  
+- **API**: Free access for partners (email `partners@remotasks.com`).  
+
+---
+
+### **Why These Work**  
+- **Low Barrier**: Most require only email outreach or affiliate signup.  
+- **Student-Friendly**: Tasks like data entry or content writing match beginner skill levels.  
+- **Global Reach**: Platforms like Fiverr and Appen accept workers from Bangladesh.  
+
+---
+
+### **Next Steps**  
+1. **Prioritize Platforms with APIs**: Start with **Remotasks** or **Appen Connect** for structured task integration.  
+2. **Leverage Affiliate Programs**: Use **Fiverr** or **iWriter** links to refer students and earn commissions.  
+3. **Negotiate Partnerships**: Email platforms like WriterBay for custom collaborations.  
+
+If you need help drafting partnership proposals, let me know! 🚀
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Project saas
+
+
+Create a website for my sass company . It works on almost all the services related with computer science and very specialised for AI. Create authentication system with password reset functionality. It will be a static website. It will only have the homepage the , AI startup page. And a contact page. Nothing else.  In case the name of the website is createHalal and as I said before it is a software company so write a description for it and we build things with alliance with the rules of Islam. It doesn't means that we build things Islamic rather we don't just build things which are Haram by the rules of Islam. That's it. And below is the email ID to keep in the contact page as a contact number 
+
+
+
+
+create.contact.369@gmail.com
+
+
+
+Supabase url     https://hqdlqogacwovunmvgvmq.supabase.co
+Supabase public/anon key      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxZGxxb2dhY3dvdnVubXZndm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU0MDAyMDIsImV4cCI6MjA2MDk3NjIwMn0.fZIWLcnyr5PpWrMTF0oLfEst-lkATpA4iZ8PPUFcrWE
+
+
+
+
+In case use this for authentication if there is anything necessary.
+
+
+
+
+
+In the pricing page there will be three pricings. I mean, this is not the pricing page. I'm sorry it should be the AI startup page. In this page there will be three pricing firstly is the basic which is the $3 per month. For this, they will have access to one AI model from any model. Doesn't matter what model they use they will have to provide $2 for the API and then they can pay more as they wish. And  it will give them a completely functional website. With the functionality is below
+
+
+Access to any of the AI model with free three month usage unlimitedly . Secondly, authentication and database support and a fully deployed website. And up to 5 chat interfaces as they want to create different categories of chats in their website so they will tell us and we will give. And basic  ui customisation. [Like about the description of their project, but it is not so much. ] they will also get 24 seven pro level customer support. And also little functionalities like dark and light mode, copying ai response. It will also have other necessary pages like about us, pricings, contact. The user will give description about this and he will get static pages, not dynamic pages or something very crucial functionality. Dashboard functionality for tracking credits will be also added.
+
+
+
+
+
+Okay, there will be another with $12 plan. They will get everything in the $3 plan which is called starter and this one is called the business plan. And also they will get some things below.
+
+
+They can choose as many models as they wish in their website from any model as they wish and they will have notification functionality. And they will also have a project/file management functionality. And up to 15 chat interfaces and functionality for categorising them. Also, they will have functionality to customise the UI more like choosing the colour codes and the font and they can also add images as inspiration for their website. And yes, they will use API's for multiple models and they will not need to give API fee rather we will give them $2 API fee for free.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://docs.google.com/document/d/1hdpcwcZDy2Ry016L7EeZ_W7n4debLXMxOFmOr7BaLHY/edit?usp=sharing
+
+
+
+
+
