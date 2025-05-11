@@ -2253,6 +2253,560 @@ Final Verdict
 
 
 
+SQL scripts for the SAAS project is below for the authentication cause it only supports basic authentication
+
+
+
+
+-- one
+
+-- Basic Supabase Auth Schema Tables (Simplified)
+-- Note: This is a simplified representation. The actual Supabase Auth schema
+-- includes many functions, triggers, and other objects managed internally.
+
+-- Create the auth schema if it doesn't exist (often managed by Supabase itself)
+CREATE SCHEMA IF NOT EXISTS auth;
+
+-- Users table
+CREATE TABLE IF NOT EXISTS auth.users (
+    instance_id uuid NULL,
+    id uuid NOT NULL UNIQUE,
+    aud character varying(255) NULL,
+    role character varying(255) NULL,
+    email character varying(255) NULL UNIQUE,
+    encrypted_password character varying(255) NULL,
+    email_confirmed_at timestamp with time zone NULL,
+    invited_at timestamp with time zone NULL,
+    confirmation_token character varying(255) NULL,
+    confirmation_sent_at timestamp with time zone NULL,
+    recovery_token character varying(255) NULL,
+    recovery_sent_at timestamp with time zone NULL,
+    email_change_token_new character varying(255) NULL,
+    email_change character varying(255) NULL,
+    email_change_sent_at timestamp with time zone NULL,
+    last_sign_in_at timestamp with time zone NULL,
+    raw_app_meta_data jsonb NULL,
+    raw_user_meta_data jsonb NULL,
+    is_super_admin boolean NULL,
+    created_at timestamp with time zone NULL,
+    updated_at timestamp with time zone NULL,
+    phone character varying(15) NULL UNIQUE,
+    phone_confirmed_at timestamp with time zone NULL,
+    phone_change character varying(15) NULL,
+    phone_change_token character varying(255) NULL,
+    phone_change_sent_at timestamp with time zone NULL,
+    confirmed_at timestamp with time zone GENERATED ALWAYS AS (LEAST(email_confirmed_at, phone_confirmed_at)) STORED,
+    email_change_token_current character varying(255) NULL,
+    email_change_confirm_status smallint DEFAULT 0 NULL,
+    banned_until timestamp with time zone NULL,
+    reauthentication_token character varying(255) NULL,
+    reauthentication_sent_at timestamp with time zone NULL,
+    is_sso_user boolean DEFAULT false NOT NULL,
+    deleted_at timestamp with time zone NULL,
+    CONSTRAINT users_pkey PRIMARY KEY (id),
+    CONSTRAINT users_phone_key UNIQUE (phone)
+);
+
+-- Identities table
+CREATE TABLE IF NOT EXISTS auth.identities (
+    id uuid NOT NULL,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    identity_data jsonb NOT NULL,
+    provider character varying(255) NOT NULL,
+    provider_id text NOT NULL, -- Added based on gist feedback
+    last_sign_in_at timestamp with time zone NULL,
+    created_at timestamp with time zone NULL,
+    updated_at timestamp with time zone NULL,
+    CONSTRAINT identities_pkey PRIMARY KEY (provider_id, provider),
+    CONSTRAINT identities_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+);
+
+-- Add other related auth tables as needed (e.g., sessions, refresh_tokens, etc.)
+-- CREATE TABLE IF NOT EXISTS auth.sessions ...
+-- CREATE TABLE IF NOT EXISTS auth.refresh_tokens ...
+
+-- Note: Supabase automatically manages RLS policies, functions (like crypt, gen_salt), 
+-- and triggers for the real auth schema. Applying this simplified script directly
+-- might not fully enable authentication without the Supabase environment.
+-- It's best practice to let Supabase manage its internal auth schema.
+-- This script is primarily for understanding the basic structure.
+
+
+
+
+
+SQL scripts for the template one
+
+
+
+
+
+
+
+
+
+
+
+
+-- Create a profiles table to store user profile information
+CREATE TABLE public.profiles (
+  id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
+  email TEXT NOT NULL,
+  name TEXT,
+  avatar_url TEXT,
+  credits INTEGER NOT NULL DEFAULT 1000,
+  plan TEXT NOT NULL DEFAULT 'free',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+);
+
+-- Create RLS policies for the profiles table
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Create policy to allow users to read their own profile
+CREATE POLICY "Users can view their own profile" 
+ON public.profiles 
+FOR SELECT 
+USING (auth.uid() = id);
+
+-- Create policy to allow users to update their own profile
+CREATE POLICY "Users can update their own profile" 
+ON public.profiles 
+FOR UPDATE 
+USING (auth.uid() = id);
+
+-- Create a table to track chat history
+CREATE TABLE public.chats (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users NOT NULL,
+  title TEXT NOT NULL,
+  model TEXT NOT NULL DEFAULT 'gpt-3.5-turbo',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+);
+
+-- Enable RLS for chats table
+ALTER TABLE public.chats ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for chats table
+CREATE POLICY "Users can view their own chats" 
+ON public.chats 
+FOR SELECT 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can create their own chats" 
+ON public.chats 
+FOR INSERT 
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own chats" 
+ON public.chats 
+FOR UPDATE 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own chats" 
+ON public.chats 
+FOR DELETE 
+USING (auth.uid() = user_id);
+
+-- Create a table to track chat messages
+CREATE TABLE public.messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  chat_id UUID REFERENCES public.chats ON DELETE CASCADE NOT NULL,
+  content TEXT NOT NULL,
+  role TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+);
+
+-- Enable RLS for messages table
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for messages table
+CREATE POLICY "Users can view messages in their chats" 
+ON public.messages 
+FOR SELECT 
+USING (
+  EXISTS (
+    SELECT 1 FROM public.chats
+    WHERE chats.id = messages.chat_id
+    AND chats.user_id = auth.uid()
+  )
+);
+
+CREATE POLICY "Users can create messages in their chats" 
+ON public.messages 
+FOR INSERT 
+WITH CHECK (
+  EXISTS (
+    SELECT 1 FROM public.chats
+    WHERE chats.id = messages.chat_id
+    AND chats.user_id = auth.uid()
+  )
+);
+
+-- Create a function to automatically create a profile when a user signs up
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, name)
+  VALUES (new.id, new.email, new.raw_user_meta_data->>'name');
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create a trigger to call the function when a user is created
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Create a table to track credit usage
+CREATE TABLE public.credit_usage (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users NOT NULL,
+  amount INTEGER NOT NULL,
+  description TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+);
+
+-- Enable RLS for credit_usage table
+ALTER TABLE public.credit_usage ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for credit_usage table
+CREATE POLICY "Users can view their own credit usage" 
+ON public.credit_usage 
+FOR SELECT 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own credit usage" 
+ON public.credit_usage 
+FOR INSERT 
+WITH CHECK (auth.uid() = user_id);
+
+
+
+
+
+
+
+
+
+
+
+
+
+The latest API took in from hugging face. 
+
+
+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
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Emails and contacts,
+
+
+
+Dear Content Runners 
+
+I hope this message finds you well.
+
+My name is Shahid Hasan, and I am the founder of Edu.1 Bangladesh , a growing online platform dedicated to empowering students in Bangladesh by providing educational resources and writing opportunities.
+
+I am reaching out to explore a potential collaboration where students from our community can contribute writing projects for your company, similar to the services offered by ProWritersTime. Our site attracts enthusiastic and capable young writers eager to gain experience and earn through quality writing assignments.
+
+I believe this partnership could provide a mutually beneficial opportunity: you would gain access to a motivated pool of writers, and our students would benefit from real-world writing experience and financial support.
+
+Would you be interested in discussing this further? I would be happy to share more details about our audience and how we can facilitate a smooth collaboration.
+
+Thank you for considering this opportunity. Looking forward to your response.
+
+Best regards, Shahid Hasan shahidhasanpollob@gmail.com
+
+
+
+
+
+ help@appen.com
+
+
+￼
+
+support@writerbay.com
+
+shahidhasanpollob@gmail.com
+
+
+Subject: Proposal for Strategic Collaboration with CreateHalal Softwares Limited
+Dear Appen Team,
+
+I hope you’re doing well. I’m reaching out to explore a potential collaboration between Appen and our company as we prepare to launch a new freelance marketplace tailored for efficiency, affordability, and added value to workers.
+
+Our platform aims to not only offer freelance job opportunities but also provide our workers with subscriptions to various platforms and software tools—including our own proprietary solutions—as part of their compensation. We would like to integrate Appen’s job listings into our marketplace using your API, enabling us to post pre-existing jobs from your platform directly to ours.
+
+Here’s where the collaboration becomes mutually beneficial: tasks typically priced at $10 on Appen could be completed on our platform at just $5, while still maintaining full accuracy and quality. We would handle the worker payments based on our internal policy, and your team would continue to benefit from task completion at reduced costs.
+
+We believe this partnership could be highly valuable for both sides, In sha Allah, and would love to schedule a meeting to discuss the opportunity in more detail. Please let us know a convenient time for you.
+
+Looking forward to your response.
+
+Warm regards,
+Shahid Hasan 
+shahidhasanpollob@gmail.com
+
+
+
+
+
+
+
+
+info@zariyaamatrimony.com
+
+
+
+
+
+
+Subject: Collaboration Proposal with CreateHalal
+
+Dear Salaam Gateway Team,
+
+Assalamu Alaikum wa Rahmatullahi wa Barakatuh,
+
+I’m Shahid Hasan from CreateHalal, a software company focused on delivering AI-powered solutions fully compliant with Islamic principles. We admire your work in highlighting developments across the global Islamic economy and believe there’s strong alignment between our missions.
+
+We’re interested in partnering with Salaam Gateway to promote our halal-certified products to your audience through a content-based collaboration. While we understand you may not currently run an affiliate program, we’re open to discussing a mutually beneficial model that supports your platform while helping us reach a like-minded audience.
+
+Warm regards,
+
+Shahid Hasan 
+shahidhasanpollob@gmail.com
+
+
+
+
+
+Subject: Proposal for Strategic Partnership with Zariyaa Matrimony
+
+Dear Zariyaa Matrimony Team,
+
+Assalamu Alaikum wa Rahmatullahi wa Barakatuh,
+
+I hope this message finds you in the best of health and Iman. My name is [Your Name], and I represent CreateHalal—a software company dedicated to developing AI-powered solutions that strictly adhere to Islamic principles.
+
+We have been following Zariyaa Matrimony and deeply appreciate your commitment to facilitating halal matrimonial connections. Your efforts resonate with our mission to provide technology solutions that are both innovative and Shariah-compliant.
+
+We are reaching out to propose a mutually beneficial partnership. Our goal is to collaborate with esteemed platforms like yours to promote our halal-certified software solutions. Given your audience’s interest in Islamic teachings and ethical practices, we believe that introducing them to our products through your platform would add value to their pursuit of a halal lifestyle.
+
+Key aspects of our proposed partnership include:
+	•	Halal-Compliant Products: All our software solutions are developed in accordance with Islamic guidelines, ensuring they meet the ethical standards your audience expects.
+	•	Revenue Sharing: We propose a revenue-sharing model where Zariyaa Matrimony would receive a percentage of the sales generated through your affiliate network.
+	•	Transparent Collaboration: We aim to maintain full transparency in our partnership, aligning with the principles of honesty and integrity emphasized in Islam.
+
+We would be honored to discuss this opportunity further and explore how we can work together to serve the Muslim community better. Please let us know a convenient time for a meeting to delve into the details of this potential collaboration.
+
+Jazakum Allahu Khairan for considering this proposal. We look forward to the possibility of working together to promote halal knowledge and practices.
+
+Warm regards,
+
+Shahid Hasan
+shahidhasanpollob@gmail.com
+
+
+To maximize your chances of admission to MIT as an HSC 2026 student (graduating in 2026) with a backend development background in Python/Django, follow this strategic plan tailored to your timeline (May 2025 onward). MIT seeks students with exceptional academic rigor, STEM leadership, and unique problem-solving skills. Below is your roadmap:
+1. Academic Preparation (2025–2026)
+Coursework Requirements
+MIT does not mandate specific classes but expects a STEM-heavy curriculum. For HSC students in Bangladesh:
+* Mathematics: Take calculus (integral/differential) and advanced algebra. If your school doesn’t offer calculus, enroll in online courses (e.g., MIT OpenCourseWare, Khan Academy).
+* Science: Physics, Chemistry, and Biology at the highest level available. Aim for A+ grades (≥90%).
+* English: Ensure strong performance in English courses (≥85%).
+* Electives: Computer science, programming, or engineering-related electives.
+Action Items:
+* Confirm with your school if AP/IB courses are available. If not, self-study via edX/Coursera.
+* Maintain a minimum GPA of 4.0/5.0 (or equivalent in HSC grading).
+2. Standardized Testing
+MIT requires SAT or ACT scores (2024–2025 cycle reinstated testing).
+* SAT Target: 1520–1580 (75th percentile: 1570).
+    * Math: 790–800 (MIT prioritizes math excellence).
+    * Evidence-Based Reading/Writing: 730–780.
+* ACT Target: 34–36 composite.
+Testing Timeline:
+* August 2025: First SAT attempt.
+* October 2025: Retake if needed.
+* December 2025: Final SAT/ACT (for Regular Action).
+Preparation:
+* Use Khan Academy’s SAT practice, UWorld, and official College Board tests.
+* Focus on math mastery (algebra, geometry, trigonometry, calculus basics).
+3. Olympiad Participation (Critical for MIT)
+MIT values international STEM Olympiad achievements. Prioritize these competitions:
+Olympiad	Pathway (Bangladesh)	Target Achievement
+International Olympiad in Informatics (IOI)	Qualify via Bangladesh Informatics Olympiad (BdIO).	National Top 10 → International participation (even a Bronze medal is stellar).
+International Physics Olympiad (IPhO)	Qualify via Bangladesh Physics Olympiad.	National Top 20 → International Bronze/Silver.
+International Mathematical Olympiad (IMO)	Qualify via Bangladesh Mathematical Olympiad (BdMO).	National Top 15 → International Honorable Mention.
+International Chemistry Olympiad (IChO)	Qualify via Bangladesh Chemistry Olympiad.	National Top 20 → International participation.
+Action Items:
+* Register for 2025–2026 national Olympiads (BdIO, BdMO, etc.).
+* Prepare via past papers, competitive programming platforms (Codeforces, LeetCode), and mentorship.
+* Highlight Olympiad participation even if you don’t win internationally-MIT values the journey.
+4. Extracurricular Profile
+MIT seeks "doers" who solve real-world problems. Leverage your backend development skills:
+Tech Projects
+* Build open-source tools (e.g., Django plugins, AI models) and publish them on GitHub.
+* Develop a portfolio website showcasing projects (e.g., a scalable Django app, API integrations).
+* Intern at a tech startup or contribute to NGOs needing tech solutions (e.g., automation tools for education).
+Leadership
+* Found a coding club at your school and organize hackathons/workshops.
+* Mentor juniors in programming or Olympiad prep.
+Research
+* Collaborate with university professors on AI/ML projects (e.g., NLP, predictive modeling).
+* Publish findings on arXiv or present at conferences (e.g., IEEE Bangladesh).
+5. Letters of Recommendation
+MIT requires two teacher recommendations:
+1. STEM Teacher: Math/Physics/CS teacher who can attest to your problem-solving rigor.
+2. Humanities Teacher: English/Bangla/History teacher who highlights communication skills.
+Action Items:
+* Build relationships with teachers starting now. Discuss your MIT goals.
+* Provide recommenders with a brag sheet (your achievements, projects, Olympiad progress).
+6. Essays & Interviews
+MIT’s essays focus on collaboration, curiosity, and impact.
+* Prompts: "Describe how you collaborate with others" / "Tell us about a challenge you’ve faced."
+* Themes: Tie your backend development work to societal impact (e.g., "How my Django app improved education access").
+Interview Prep:
+* Practice articulating your passion for STEM and long-term goals.
+* Highlight unique angles (e.g., "Combining coding with Olympiad problem-solving").
+7. Application Timeline
+Deadline	Task
+May–August 2025	SAT prep, Olympiad registration, start drafting essays.
+September 2025	Finalize recommenders, submit Mid-Year School Report.
+November 1, 2025	Early Action deadline (submit SAT scores, essays, recommendations).
+January 6, 2026	Regular Action deadline (if not applying Early).
+February 2026	Submit February Updates & Notes Form (midyear grades).
+8. Financial Aid
+MIT is need-blind for international students. Submit the CSS Profile and required documents by February 15, 2026.
+Final Notes
+* Backend Development Edge: MIT values applicants who "make things." Your Django projects and open-source contributions will stand out.
+* Olympiad Strategy: Aim for national finals in at least two STEM Olympiads. International recognition is a bonus.
+* Holistic Fit: MIT seeks students who "take risks, fail, and grow." Highlight resilience in essays (e.g., a coding project that initially failed but led to innovation).
+Your Advantage: Bangladesh’s rising STEM talent pool gives you a unique narrative. Emphasize how your background fuels your desire to solve global challenges through technology.
+For reference, MIT’s 2025 admitted students had:
+* Median SAT: 1543
+* 92% ranked in the top 10% of their class.
+* 70% had international STEM competition experience36.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Part 1: MIT Admission Preparation (Free/Local Resources for Bangladesh)
+1. Best Free Courses & Resources
+MIT values advanced STEM coursework. Below are free courses aligned with MIT’s expectations, tailored for your HSC 2026 timeline and Bangladeshi context:
+Subject	Recommended Courses/Resources	Source/Link
+Calculus	MIT OpenCourseWare: Single Variable Calculus (18.01)	MIT OCW15
+Physics	MIT Highlights for High School: AP Physics 1 & 2	Highlights for High School27
+Computer Science	edX: Introduction to Computer Science and Programming Using Python (MIT)	Free edX Courses3
+Math Foundations	Khan Academy: AP Calculus BC, Linear Algebra	Khan Academy4
+Local Support	10 Minute School: Free HSC classes (Physics, Math, ICT)	10 Minute School6
+Notes:
+* Complete MIT OCW courses with problem sets (e.g., 18.01 Calculus) to demonstrate college-level rigor.
+* Use 10 Minute School for HSC exam prep and local curriculum alignment.
+2. Olympiads Recognized by MIT
+MIT prioritizes international STEM Olympiad medals. For computer science (your interest), focus on:
+Olympiad	Pathway (Bangladesh)	Target Achievement	Free Prep Resources
+IOI (Informatics)	Qualify via BdIO (Bangladesh Informatics Olympiad)	National Top 10 → International participation.	Codeforces, LeetCode
+IMO (Mathematics)	Qualify via BdMO (Bangladesh Math Olympiad)	National Top 15 → International Honorable Mention.	Art of Problem Solving (free forums)
+IPhO (Physics)	Qualify via BdPhO (Bangladesh Physics Olympiad)	National Top 20 → International participation.	MIT OCW Physics courses27
+Key Points:
+* IOI is critical for CS applicants. Start practicing algorithmic problems now.
+* Local Olympiad Dates: BdIO/BdMO registration typically opens in late 2025 for 2026 competitions.
+3. Free Mock Tests
+Test Type	Resources
+SAT	Khan Academy SAT Practice (full-length tests), Bluebook App
+Olympiads	Past BdIO/BdMO papers from Bangladesh Mathematical Society
+4. Can You Participate in 2026 Olympiads Before MIT Admission?
+Yes. MIT’s Regular Decision deadline is January 2026, while most Olympiad national finals occur in early 2026. For example:
+* BdIO 2026: Registration in late 2025 → National finals in early 2026.
+* Results can be included in your MIT application’s February Updates & Notes Form.
+Part 2: Project Feasibility Analysis
+Decentralized AI SaaS Platform: Realistic?
+Your project is technically possible but faces significant challenges:
+Strengths
+* Cost Efficiency: Peer-hosted models reduce cloud costs (e.g., Mac M2 devices can run Mistral-7B at ~10 tokens/sec).
+* Ethical Focus: Pre-embedded system prompts align with growing demand for responsible AI.
+Challenges
+1. Hardware Limitations:
+    * Mac M2 (8GB RAM) can handle ~1,000 requests/day for Qwen-7B. Scaling to 10k+ requests requires optimized models (e.g., GGUF quantization).
+    * Solution: Use TinyLlama or Phi-3 (3B-parameter models) for higher throughput.
+2. Decentralization Risks:
+    * Peer-hosted nodes may have inconsistent uptime.
+    * Solution: Hybrid architecture (combine peer nodes with a small central cluster for reliability).
+3. Monetization:
+    * Charging $5–$9/month is feasible if operational costs are <$0.50/user (achievable with lightweight models).
+4. Security:
+    * Local rate limiting (e.g., Redis) is vulnerable to reverse engineering.
+    * Solution: Use JWT tokens with expiry and encrypt API keys.
+Market Viability
+* Target Audience: Startups in Bangladesh/South Asia needing affordable AI APIs (validated by platforms like CrossRoads Initiative9).
+* Competitors: Hugging Face offers 30k free tokens/month, but your platform’s “high-rate + ethics” angle differentiates it.
+MVP Roadmap Adjustments
+* Phase 1: Start with a centralized MVP (hosted on your hardware) to validate demand before decentralizing.
+* Phase 3: Use FastAPI for the gateway but add auth via OAuth2 (e.g., Auth0 free tier).
+Final Verdict
+* MIT Prep: Focus on IOI/BdMO, MIT OCW courses, and SAT prep (1520+ target).
+* Project: Viable for niche markets (e.g., Bangladeshi startups) with phased scaling. Start with a centralized MVP and iterate.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
