@@ -4196,6 +4196,48 @@ Let me know if you need help refining the pricing or features! 🚀
 
 
 
+Goto 
+https://marketplace.gohighlevel.com/
+after login in, you will see (TESTING) or (APP TEST)
+click on it to create an app test account, you will create your login and access, after that is successful
+goto gohighlevel.com to login
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
