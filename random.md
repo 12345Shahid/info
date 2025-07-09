@@ -5139,6 +5139,58 @@ This comprehensive approach demonstrates not just the technology, but how it spe
 +852 5919 7632 = haram khan [hong kong]
 
 
+Commonly used 
+
+
+As-salamualaykum wa Rohmatullahi Babarakatuh
+
+
+
+
+
+Trial phone number by twilo  +18777804236
+
+
+
+ +923462789594
+
+
+
+
+
+YKMWXD77Y9S6UTVMQ8Y22MBQ  = twillo recovery code 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 https://docs.google.com/document/d/1hdpcwcZDy2Ry016L7EeZ_W7n4debLXMxOFmOr7BaLHY/edit?usp=sharing
 
 https://docs.google.com/document/d/1twrAC1HmaHBZbuFB6lCK-B-PmPf_5UhvfvgvM9gEeww/edit?usp=sharing
